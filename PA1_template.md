@@ -2,7 +2,8 @@
 =========================================
 
 #Loading and preprocessing the data
-```{r}
+
+```r
 setwd("D:/Coursera/201504 - Reproducible Research/Data")
 library(ggplot2)
 data_raw <- read.csv('activity.csv',colClasses=c('numeric','factor', 'numeric'))
@@ -14,21 +15,35 @@ date<- data.frame(Row=1:53,Date=c(unique(df1$date)))
 
 #What is mean total number of steps taken per day?
 1. Make a histogram of the total number of steps taken each day
-```{r}
+
+```r
 step                  <- by(df1$steps, df1$date, sum)
 date_step             <- data.frame(date=date[,2], steps=c(step))
 row.names(date_step)  <- NULL
 
 ggplot(data=date_step, aes(x=date, y=steps)) +
   geom_bar(stat="identity", position=position_dodge(), colour="black")
-
 ```
 
-2. Calculate and report the mean and median of the total number of steps taken per day
-```{r}
-mean(step)
-median(step)
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png) 
 
+2. Calculate and report the mean and median of the total number of steps taken per day
+
+```r
+mean(step)
+```
+
+```
+## [1] 10766.19
+```
+
+```r
+median(step)
+```
+
+```
+## 2012-11-12 
+##      10765
 ```
 The mean is 10766 steps per day.
 The median is 10765 steps per day.
@@ -36,7 +51,8 @@ The median is 10765 steps per day.
 #What is the average daily activity pattern?
 
 Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
-```{r}
+
+```r
 time <- data.frame(Row=1:288,period=c(unique(df1$interval)))
 step2 <- by(df1$steps, df1$interval, mean)
 time_step <- data.frame(interval=time[,2], steps=c(step2))
@@ -49,9 +65,17 @@ plot(  x=time_step$interval
 )
 ```
 
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
+
 Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
-```{r}
+
+```r
 time_step[which.max(time_step$steps), ]
+```
+
+```
+##     interval    steps
+## 104      835 206.1698
 ```
 The time interval at 835 contains the maximum number of steps (206.17 steps)
 
@@ -60,8 +84,14 @@ The time interval at 835 contains the maximum number of steps (206.17 steps)
 Note that there are a number of days/intervals where there are missing values (coded as NA). The presence of missing days may introduce bias into some calculations or summaries of the data.
 
 1. Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
-```{r}
+
+```r
 sapply(data_raw, function(x) sum(is.na(x)))
+```
+
+```
+##    steps     date interval 
+##     2304        0        0
 ```
 
 
@@ -69,7 +99,8 @@ sapply(data_raw, function(x) sum(is.na(x)))
 
 Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
-```{r}
+
+```r
 df1_r <- data_raw
 
 x <- for(i in 1:ncol(df1_r)){
@@ -84,21 +115,38 @@ For the sake of simplicity, the NA values would just be replaced by the average 
 
 
 3. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
-```{r}
+
+```r
 ggplot(data=date_step_r, aes(x=date, y=steps)) +
   geom_bar(stat="identity", position=position_dodge(), colour="black")
 ```
 
+![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png) 
+
 The histogram, as a result, is similar to the one we had before.
-```{r}
+
+```r
 mean(step_r)
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 median(step_r)
+```
+
+```
+## 2012-11-04 
+##   10766.19
 ```
 Because we substituted the NAs with average steps, the mean and median remains the same (almost).
 
 
 #Are there differences in activity patterns between weekdays and weekends?
-```{r}
+
+```r
 date_day_r <- data.frame(date=df1_r$date,day=weekdays(df1_r$date))
 day_step_r <- data.frame(cbind(date_day_r,steps=df1_r$steps,interval=df1_r$interval))
 
@@ -136,14 +184,12 @@ plot(  x=data_weekday_r$interval
 )
 ```
 
+![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-10-1.png) 
+
 
 We note that the average steps taken is lower during the typical morning rush hour during the weekends. Presumably, one spends more time walking to work during the weekdays.
 
 However, average taken is higher after the morning rush hour on the weekends presumably one spends more time outdoors as opposed to sitting in the office during working hours on a typical weekday. The data also showed steps taken is higher for the rest of the day during the weekend as compared to a weekday.
 
 
-```{r, include=FALSE}
-   # add this chunk to end of mycode.rmd
-   file.rename(from="PA1_template.RMD", 
-               to="PA1_template.md")
-```
+
